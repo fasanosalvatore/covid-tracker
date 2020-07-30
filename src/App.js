@@ -1,8 +1,7 @@
 import React from 'react';
-import './App.css';
 
 function App() {
-	return <div className="App">Nuova App</div>;
+	return <div className="bg-indigo-50 text-6xl">Nuova App</div>;
 }
 
 export default App;
