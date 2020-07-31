@@ -9,7 +9,6 @@ const Header = () => {
 
 	const customStyles = {
 		control: (provided, state) => {
-			console.log(provided, state);
 			return {
 				...provided,
 				//border: state.menuIsOpen ? 'yellow' : 'gray',

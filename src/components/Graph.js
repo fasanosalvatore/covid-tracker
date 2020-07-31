@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { Line } from 'react-chartjs-2';
 import Skeleton from 'react-loading-skeleton';
@@ -51,21 +51,24 @@ const options = {
 const Graph = ({ casesType }) => {
 	const [chartPoints, setChartPoints] = useState([]);
 
-	const newPoints = (data) => {
-		let points = [];
-		let lastPoint;
-		for (let date in data[casesType.type]) {
-			if (lastPoint) {
-				const newPoint = {
-					x: date,
-					y: data[casesType.type][date] - lastPoint,
-				};
-				points.push(newPoint);
+	const newPoints = useCallback(
+		(data) => {
+			let points = [];
+			let lastPoint;
+			for (let date in data[casesType.type]) {
+				if (lastPoint) {
+					const newPoint = {
+						x: date,
+						y: data[casesType.type][date] - lastPoint,
+					};
+					points.push(newPoint);
+				}
+				lastPoint = data[casesType.type][date];
 			}
-			lastPoint = data[casesType.type][date];
-		}
-		setChartPoints(points);
-	};
+			setChartPoints(points);
+		},
+		[casesType.type]
+	);
 
 	useEffect(() => {
 		(async () => {
