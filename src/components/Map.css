@@ -1,0 +1,24 @@
+.map .leaflet-container {
+	height: 95%;
+	width: 100%;
+	border-radius: 4px;
+}
+
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+	box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+}
+
+.leaflet-popup-content-wrapper {
+	border-radius: 4px;
+	padding: 0;
+	overflow: hidden;
+}
+
+.leaflet-popup-content {
+	margin: 0px;
+}
+
+.leaflet-container a.leaflet-popup-close-button {
+	display: none;
+}
