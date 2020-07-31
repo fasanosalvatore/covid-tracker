@@ -74,7 +74,7 @@ const Graph = ({ casesType }) => {
 			);
 			newPoints(res.data);
 		})();
-	}, [casesType]);
+	}, [casesType, newPoints]);
 
 	if (chartPoints.length === 0 || !chartPoints)
 		return (

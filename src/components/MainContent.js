@@ -15,7 +15,7 @@ const MainContent = () => {
 			);
 			setCountries(res.data);
 		})();
-	}, []);
+	}, [casesType.type]);
 
 	return (
 		<main
