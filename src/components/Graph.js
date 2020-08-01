@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import axios from 'axios';
+import React from 'react';
+import useSwr from 'swr';
 import { Line } from 'react-chartjs-2';
 import Skeleton from 'react-loading-skeleton';
+import { chartPointFetch } from '../helper';
 
 const options = {
 	legend: {
@@ -49,42 +50,18 @@ const options = {
 };
 
 const Graph = ({ casesType }) => {
-	const [chartPoints, setChartPoints] = useState([]);
-
-	const newPoints = useCallback(
-		(data) => {
-			let points = [];
-			let lastPoint;
-			for (let date in data[casesType.type]) {
-				if (lastPoint) {
-					const newPoint = {
-						x: date,
-						y: data[casesType.type][date] - lastPoint,
-					};
-					points.push(newPoint);
-				}
-				lastPoint = data[casesType.type][date];
-			}
-			setChartPoints(points);
-		},
-		[casesType.type]
+	const { data: chartPoints } = useSwr(
+		['https://disease.sh/v3/covid-19/historical/all?lastdays=120', casesType],
+		chartPointFetch
 	);
 
-	useEffect(() => {
-		(async () => {
-			const res = await axios.get(
-				'https://disease.sh/v3/covid-19/historical/all?lastdays=120'
-			);
-			newPoints(res.data);
-		})();
-	}, [casesType, newPoints]);
-
-	if (chartPoints.length === 0 || !chartPoints)
+	if (!chartPoints) {
 		return (
 			<div className="mt-3" style={{ height: '30%' }}>
 				<Skeleton width={'100%'} height={'100%'} />
 			</div>
 		);
+	}
 
 	return (
 		<div className="mt-3" style={{ height: '30%' }}>

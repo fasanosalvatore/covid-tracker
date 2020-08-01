@@ -1,26 +1,34 @@
-import React, { useContext } from 'react';
-import { CasesContext } from '../context';
+import React from 'react';
+import useSwr from 'swr';
 import Card from './Card';
+import { countryInfoFetch } from '../helper';
 
-const CardList = () => {
-	const { countryInfo, setType, casesType } = useContext(CasesContext);
-	const cards = [
-		{
-			title: 'cases',
-			cases: countryInfo.todayCases,
-			total: countryInfo.cases,
-		},
-		{
-			title: 'recovered',
-			cases: countryInfo.todayRecovered,
-			total: countryInfo.recovered,
-		},
-		{
-			title: 'deaths',
-			cases: countryInfo.todayDeaths,
-			total: countryInfo.deaths,
-		},
-	];
+const CardList = ({ casesType, dispatch, selectedCountry }) => {
+	const { data: countryInfo } = useSwr(
+		`https://disease.sh/v3/covid-19/${selectedCountry.value}`,
+		countryInfoFetch
+	);
+
+	let cards = [];
+	if (countryInfo) {
+		cards = [
+			{
+				title: 'cases',
+				cases: countryInfo.todayCases,
+				total: countryInfo.cases,
+			},
+			{
+				title: 'recovered',
+				cases: countryInfo.todayRecovered,
+				total: countryInfo.recovered,
+			},
+			{
+				title: 'deaths',
+				cases: countryInfo.todayDeaths,
+				total: countryInfo.deaths,
+			},
+		];
+	}
 
 	return (
 		<section className="py-1 container mx-auto" style={{ height: '20%' }}>
@@ -30,9 +38,9 @@ const CardList = () => {
 			>
 				{cards.map((card) => (
 					<Card
-						{...card}
 						key={card.title}
-						setType={setType}
+						{...card}
+						dispatch={dispatch}
 						casesType={casesType}
 					/>
 				))}

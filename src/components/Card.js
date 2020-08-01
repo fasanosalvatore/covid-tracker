@@ -1,8 +1,17 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Skeleton from 'react-loading-skeleton';
 
-function Card({ title, cases, total, casesType, setType }) {
-	if (!cases) return <Skeleton width={'100%'} height={150} />;
+function Card({ title, cases, total, casesType, dispatch }) {
+	const [loading, setLoading] = useState(false);
+
+	useEffect(() => {
+		setLoading((prevState) => !prevState);
+		setTimeout(() => {
+			setLoading((prevState) => !prevState);
+		}, 400);
+	}, [cases]);
+
+	if (loading) return <Skeleton width={'100%'} height={150} />;
 	return (
 		<div
 			className={`bg-white overflow-hidden shadow rounded-lg border-t-4 border-transparent ${
@@ -60,8 +69,8 @@ function Card({ title, cases, total, casesType, setType }) {
 				</div>
 			</div>
 			<button
-				className="bg-gray-50 px-4 py-4 sm:px-6 text-sm leading-5 font-medium text-indigo-600 hover:text-indigo-500 transition ease-in-out duration-150 w-full text-left"
-				onClick={() => setType(title)}
+				className="bg-gray-50 px-4 py-4 sm:px-6 text-sm leading-5 font-medium text-indigo-600 hover:text-indigo-500 transition ease-in-out duration-150 w-full text-left focus:outline-none"
+				onClick={() => dispatch({ type: title })}
 			>
 				{casesType.type === title ? "You're viewing this data" : 'View data'}
 			</button>
@@ -69,4 +78,4 @@ function Card({ title, cases, total, casesType, setType }) {
 	);
 }
 
-export default Card;
+export default React.memo(Card);

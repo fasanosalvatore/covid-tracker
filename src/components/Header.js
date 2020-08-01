@@ -1,46 +1,34 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React from 'react';
 import Select from 'react-select';
-import axios from 'axios';
-import { CasesContext } from '../context';
+import useSwr from 'swr';
+import { countriesFetch, countryInfoFetch } from '../helper';
+import Skeleton from 'react-loading-skeleton';
 
-const Header = () => {
-	const { countryInfo, country, setCountry } = useContext(CasesContext);
-	const [options, setOptions] = useState([]);
+const Header = ({ selectedCountry, setSelectedCountry }) => {
+	const { data: countries } = useSwr(
+		'https://restcountries.eu/rest/v2/all',
+		countriesFetch
+	);
 
-	const customStyles = {
-		control: (provided, state) => {
-			return {
-				...provided,
-				//border: state.menuIsOpen ? 'yellow' : 'gray',
-			};
-		},
-	};
-
-	useEffect(() => {
-		async function fn() {
-			const res = await axios.get('https://restcountries.eu/rest/v2/all');
-			const data = res.data.map((country) => ({
-				label: country.name,
-				value: 'countries/' + country.alpha2Code,
-			}));
-			data.unshift({ value: 'all', label: 'Worldwide' });
-			setOptions(data);
-		}
-		fn();
-	}, []);
+	const { data: countryInfo, errorCountryInfo } = useSwr(
+		`https://disease.sh/v3/covid-19/${selectedCountry.value}`,
+		countryInfoFetch
+	);
 
 	return (
 		<header className="" style={{ height: '10%' }}>
 			<div className="max-w-xs sm:container mx-auto py-4 flex flex-col sm:flex-row justify-between items-center h-full">
 				<h1 className="text-2xl">Covid Tracker </h1>
 				<span className="text-xs italic mb-2 sm:mb-0">
-					Last update: {countryInfo.updated}
+					{!countryInfo && !errorCountryInfo ? (
+						<Skeleton width={30} height={10} />
+					) : (
+						`Last update: ${countryInfo.updated}`
+					)}
 				</span>
 				<Select
-					styles={customStyles}
 					theme={(theme) => ({
 						...theme,
-						//borderRadius: 0,
 						colors: {
 							...theme.colors,
 							primary25: 'rgba(104,117,245,0.2)',
@@ -48,9 +36,9 @@ const Header = () => {
 						},
 					})}
 					className="flex-1 max-w-xs min-w-full sm:min-w-0"
-					value={country}
-					onChange={(selectedValue) => setCountry(selectedValue)}
-					options={options}
+					value={selectedCountry}
+					onChange={(selectedValue) => setSelectedCountry(selectedValue)}
+					options={countries}
 				/>
 			</div>
 		</header>
