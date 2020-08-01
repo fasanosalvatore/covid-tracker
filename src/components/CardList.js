@@ -42,6 +42,7 @@ const CardList = ({ casesType, dispatch, selectedCountry }) => {
 						{...card}
 						dispatch={dispatch}
 						casesType={casesType}
+						countryInfo={countryInfo}
 					/>
 				))}
 			</div>

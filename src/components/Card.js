@@ -1,17 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import Skeleton from 'react-loading-skeleton';
 
-function Card({ title, cases, total, casesType, dispatch }) {
-	const [loading, setLoading] = useState(false);
-
-	useEffect(() => {
-		setLoading((prevState) => !prevState);
-		setTimeout(() => {
-			setLoading((prevState) => !prevState);
-		}, 400);
-	}, [cases]);
-
-	if (loading) return <Skeleton width={'100%'} height={150} />;
+function Card({ title, cases, total, casesType, dispatch, countryInfo }) {
+	if (!countryInfo) return <Skeleton width={'100%'} height={150} />;
 	return (
 		<div
 			className={`bg-white overflow-hidden shadow rounded-lg border-t-4 border-transparent ${
